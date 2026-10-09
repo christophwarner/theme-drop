@@ -7,13 +7,13 @@ Built for parents and kids: one-line install, then right-click → **Open With �
 ## Install (one line)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/christophwarner/theme-drop/main/install.sh | bash
+curl -fsSL https://cdn.jsdelivr.net/gh/christophwarner/theme-drop@main/install.sh | bash
 ```
 
 If the GitHub username/repo differs:
 
 ```bash
-THEME_DROP_REPO=yourname/theme-drop curl -fsSL https://raw.githubusercontent.com/yourname/theme-drop/main/install.sh | bash
+THEME_DROP_REPO=yourname/theme-drop curl -fsSL https://cdn.jsdelivr.net/gh/yourname/theme-drop@main/install.sh | bash
 ```
 
 Needs: Python 3, `curl`, GNOME (or any desktop that reads `~/.local/share/icons/` + Tweaks).
@@ -39,7 +39,7 @@ theme-drop uninstall ThemeFolderName
 ## Uninstall Theme Drop
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/christophwarner/theme-drop/main/uninstall.sh | bash
+curl -fsSL https://cdn.jsdelivr.net/gh/christophwarner/theme-drop@main/uninstall.sh | bash
 ```
 
 This only removes the Theme Drop app. Themes already copied into `~/.local/share/icons/` stay until you delete them or run `theme-drop uninstall …`.

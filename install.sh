@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Theme Drop — one-line install:
-#   curl -fsSL https://raw.githubusercontent.com/<you>/theme-drop/main/install.sh | bash
+#   curl -fsSL https://cdn.jsdelivr.net/gh/christophwarner/theme-drop@main/install.sh | bash
 set -euo pipefail
 
 REPO="${THEME_DROP_REPO:-christophwarner/theme-drop}"
@@ -9,6 +9,7 @@ PREFIX="${THEME_DROP_PREFIX:-$HOME/.local}"
 BIN_DIR="$PREFIX/bin"
 APP_DIR="$PREFIX/share/applications"
 SRC_DIR="$PREFIX/share/theme-drop/src"
+ONE_LINER_BASE="${THEME_DROP_ONE_LINER_BASE:-https://cdn.jsdelivr.net/gh/${REPO}@${BRANCH}}"
 
 echo "Theme Drop installer"
 echo "  prefix: $PREFIX"
@@ -42,10 +43,14 @@ resolve_source() {
     echo "hint: set THEME_DROP_REPO=owner/repo if the repo name differs" >&2
     exit 1
   fi
-  # github archive extracts to theme-drop-<branch>/ (mindepth skips TMP_DIR itself,
-  # which is also named theme-drop-install.*)
-  SOURCE_ROOT="$(find "$TMP_DIR" -mindepth 1 -maxdepth 1 -type d -name 'theme-drop-*' | head -n1)"
-  if [[ -z "$SOURCE_ROOT" || ! -d "$SOURCE_ROOT/theme_drop" ]]; then
+  # Prefer the directory that contains the Python package (avoids matching
+  # TMP_DIR itself, which is named theme-drop-install.*).
+  local pkg
+  pkg="$(find "$TMP_DIR" -mindepth 2 -maxdepth 3 -type d -name theme_drop | head -n1)"
+  if [[ -n "$pkg" ]]; then
+    SOURCE_ROOT="$(cd "$(dirname "$pkg")" && pwd)"
+  fi
+  if [[ -z "${SOURCE_ROOT:-}" || ! -d "$SOURCE_ROOT/theme_drop" || ! -f "$SOURCE_ROOT/bin/theme-drop" ]]; then
     echo "error: unexpected archive layout under $TMP_DIR" >&2
     ls -la "$TMP_DIR" >&2 || true
     exit 1
@@ -99,4 +104,4 @@ echo "     or run:  theme-drop install ~/Downloads/theme.zip --force"
 echo "  3. Open GNOME Tweaks → Appearance → pick Icons or Cursor"
 echo
 echo "List installed themes:  theme-drop list"
-echo "Uninstall Theme Drop:   curl -fsSL https://raw.githubusercontent.com/${REPO}/main/uninstall.sh | bash"
+echo "Uninstall Theme Drop:   curl -fsSL ${ONE_LINER_BASE}/uninstall.sh | bash"
