@@ -26,8 +26,8 @@ cleanup() {
 trap cleanup EXIT
 
 resolve_source() {
-  # Local checkout (bash install.sh)
-  if [[ -n "$SCRIPT_DIR" && -d "$SCRIPT_DIR/theme_drop" && -f "$SCRIPT_DIR/bin/theme-drop" ]]; then
+  # Local checkout (bash install.sh) — ignore /dev/fd from curl|bash / process substitution
+  if [[ -n "$SCRIPT_DIR" && "$SCRIPT_DIR" != /dev/* && -d "$SCRIPT_DIR/theme_drop" && -f "$SCRIPT_DIR/bin/theme-drop" ]]; then
     SOURCE_ROOT="$SCRIPT_DIR"
     echo "  source: local checkout ($SOURCE_ROOT)"
     return
@@ -42,10 +42,12 @@ resolve_source() {
     echo "hint: set THEME_DROP_REPO=owner/repo if the repo name differs" >&2
     exit 1
   fi
-  # github archive extracts to theme-drop-<branch>/
-  SOURCE_ROOT="$(find "$TMP_DIR" -maxdepth 1 -type d -name 'theme-drop-*' | head -n1)"
+  # github archive extracts to theme-drop-<branch>/ (mindepth skips TMP_DIR itself,
+  # which is also named theme-drop-install.*)
+  SOURCE_ROOT="$(find "$TMP_DIR" -mindepth 1 -maxdepth 1 -type d -name 'theme-drop-*' | head -n1)"
   if [[ -z "$SOURCE_ROOT" || ! -d "$SOURCE_ROOT/theme_drop" ]]; then
-    echo "error: unexpected archive layout" >&2
+    echo "error: unexpected archive layout under $TMP_DIR" >&2
+    ls -la "$TMP_DIR" >&2 || true
     exit 1
   fi
 }
