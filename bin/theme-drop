@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Wrapper so `theme-drop` works after install without packaging tools."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+# When installed: ~/.local/share/theme-drop/src/theme_drop
+# When run from repo: ../theme_drop next to bin/
+_HERE = Path(__file__).resolve().parent
+_CANDIDATES = [
+    _HERE.parent / "share" / "theme-drop" / "src",
+    Path.home() / ".local" / "share" / "theme-drop" / "src",
+    _HERE.parent,  # repo root (theme_drop/ package lives here)
+]
+for _root in _CANDIDATES:
+    if (_root / "theme_drop").is_dir():
+        sys.path.insert(0, str(_root))
+        break
+
+from theme_drop.cli import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

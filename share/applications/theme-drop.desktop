@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Theme Drop
+Comment=Install GNOME icon and cursor themes from archives
+Exec=theme-drop %f
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=Utility;DesktopSettings;
+MimeType=application/zip;application/x-zip-compressed;application/x-tar;application/gzip;application/x-gzip;application/x-xz;application/x-bzip2;application/zstd;application/x-compressed-tar;application/x-xz-compressed-tar;application/x-bzip-compressed-tar;application/x-zstd-compressed-tar;
+Keywords=cursor;icon;theme;gnome;tweaks;
+StartupNotify=false
+NoDisplay=false
